@@ -1,0 +1,2 @@
+rootProject.name='viewPager讓一個頁面裡有多個頁面'
+include ':app'
