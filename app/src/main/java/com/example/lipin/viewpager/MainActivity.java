@@ -5,10 +5,12 @@ import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import butterknife.BindView;
@@ -21,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     //統合管理
     private Fragment[] fs = new Fragment[5];
+    private ActionBar actionBar;
 
 
     @Override
@@ -36,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
         fs[2] = new P2();
         fs[3] = new P3();
         fs[4] = new P4();
+
+        initActionBar();
 
 
         //需要有調變器做activity與viewPager做兩個之間的橋樑,這樣兩者才能互動
@@ -79,6 +84,37 @@ public class MainActivity extends AppCompatActivity {
         public int getCount() {
             //裡面需要的是給出總共有幾個Fragment
             return fs.length;
+        }
+    }
+    private void initActionBar(){
+        actionBar = getSupportActionBar();//他本來就擁有的,把它拿出來用
+        MyTabListner myTabListner = new MyTabListner();
+        //讓ActionBar增加欄位
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        //新增Tab,需要setTabListener()
+        actionBar.addTab(actionBar.newTab().setText("Page1").setTabListener(myTabListner));
+        actionBar.addTab(actionBar.newTab().setText("Page2").setTabListener(myTabListner));
+        actionBar.addTab(actionBar.newTab().setText("Page3").setTabListener(myTabListner));
+    }
+
+    //使用ActionBar增加按鈕需要implements ActionBar.TabListener
+    private  class  MyTabListner implements ActionBar.TabListener{
+
+        @Override
+        public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+            //因為tab的三個按鈕值是0,1,2,不過上面的判斷顯示viewPager是123
+            //0和４是為了特效使用
+            viewPager.setCurrentItem(tab.getPosition()+1);
+        }
+
+        @Override
+        public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+
+        }
+
+        @Override
+        public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+
         }
     }
 
